@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoScan AI | Turn Plastic Waste into Rewards</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tech-blue': '#2563EB',
+                        'eco-green': '#10B981',
+                        'dark-bg': '#1F2937',
+                    },
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Open Sans', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; }
+        .hero-gradient {
+            background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
+        }
+    </style>
+</head>
+<body class="text-gray-700">
+
+    <nav class="bg-white shadow-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center gap-2">
+                        <i class="fa-solid fa-recycle text-eco-green text-3xl"></i>
+                        <span class="font-heading font-bold text-2xl text-gray-800">EcoScan <span class="text-tech-blue">AI</span></span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-tech-blue font-semibold transition">Home</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-tech-blue font-semibold transition">How It Works</a>
+                    <a href="#rewards" class="text-gray-600 hover:text-tech-blue font-semibold transition">Rewards</a>
+                    <a href="#technology" class="text-gray-600 hover:text-tech-blue font-semibold transition">Technology</a>
+                    <a href="#download" class="bg-tech-blue text-white px-5 py-2 rounded-full font-bold hover:bg-blue-700 transition shadow-lg">Download App</a>
+                </div>
+                <div class="flex items-center md:hidden">
+                    <button onclick="toggleMenu()" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <a href="#home" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Home</a>
+            <a href="#how-it-works" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">How It Works</a>
+            <a href="#rewards" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Rewards</a>
+            <a href="#technology" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Technology</a>
+        </div>
+    </nav>
+
+    <section id="home" class="hero-gradient pt-32 pb-20 lg:pt-40 lg:pb-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <div class="text-center lg:text-left">
+                    <span class="bg-green-100 text-eco-green px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wider mb-4 inline-block">Powered by Google Cloud Vision</span>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight mb-6">
+                        Recycle Smarter. <br>Earn Faster.
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
+                        Upload a photo of your waste. Google AI will identify it, and we will calculate your rewards.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <input type="file" id="imageInput" accept="image/*" capture="environment" class="hidden" onchange="processImage()">
+                        
+                        <button onclick="document.getElementById('imageInput').click()" class="bg-tech-blue text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-camera"></i> Scan Waste Now
+                        </button>
+                    </div>
+                    
+                    <div id="loadingMessage" class="hidden mt-4 text-gray-500 font-bold animate-pulse">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing image...
+                    </div>
+                </div>
+
+                <div class="relative flex justify-center">
+                    <div class="relative w-72 h-[550px] bg-gray-900 rounded-[3rem] shadow-2xl border-8 border-gray-900 overflow-hidden">
+                        <div class="bg-white h-full w-full flex flex-col relative">
+                            <div class="bg-eco-green h-16 w-full flex items-center justify-center text-white font-bold">
+                                EcoScan AI
+                            </div>
+                            
+                            <div class="h-1/2 bg-gray-100 flex items-center justify-center overflow-hidden">
+                                <img id="previewImage" src="" class="hidden w-full h-full object-cover">
+                                <i id="placeholderIcon" class="fa-solid fa-image text-4xl text-gray-300"></i>
+                            </div>
+
+                            <div class="h-1/2 p-6 flex flex-col justify-center">
+                                <div class="text-center">
+                                    <h3 class="font-bold text-lg text-gray-800 mb-2">Analysis Result</h3>
+                                    
+                                    <p id="resultText" class="text-gray-500 text-sm mb-4">No scan yet.</p>
+                                    
+                                    <div id="pointsDisplay" class="hidden">
+                                        <p class="text-3xl font-bold text-eco-green">+ <span id="pointsValue">0</span> Pts</p>
+                                        <button class="bg-tech-blue text-white w-full py-2 rounded mt-4 font-bold shadow-md">
+                                            Add to Wallet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">The Easiest Way to Manage Home Waste</h2>
+                <p class="text-gray-600 text-lg">Plastic waste is accumulating. We use advanced AI to identify your waste, ensure it gets to the right traders, and reward you instantly.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 bg-gray-50 rounded-2xl hover:shadow-xl transition duration-300 border border-gray-100">
+                    <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-camera-rotate text-tech-blue text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">AI-Powered Scanning</h3>
+                    <p class="text-gray-600">Instantly identify bio-degradable versus non-recyclable plastics just by taking a photo using computer vision.</p>
+                </div>
+                <div class="p-8 bg-gray-50 rounded-2xl hover:shadow-xl transition duration-300 border border-gray-100">
+                    <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-scale-balanced text-eco-green text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Fair Value Rewards</h3>
+                    <p class="text-gray-600">Our Machine Learning algorithms calculate fair cashback points based on the exact quantity and quality of your waste.</p>
+                </div>
+                <div class="p-8 bg-gray-50 rounded-2xl hover:shadow-xl transition duration-300 border border-gray-100">
+                    <div class="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-truck-fast text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Hassle-Free Pickup</h3>
+                    <p class="text-gray-600">We locate the nearest trader and optimize their path to your doorstep for efficient and fast collection.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="py-20 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-heading font-bold mb-4">How It Works</h2>
+                <p class="text-gray-400">From trash to treasure in four simple steps.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+                <div class="hidden md:block absolute top-12 left-0 w-full h-1 bg-gray-700 -z-10 transform translate-y-1/2"></div>
+
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-tech-blue rounded-full flex items-center justify-center border-8 border-gray-900 z-10 mb-6">
+                        <i class="fa-solid fa-mobile-screen-button text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">1. Snap & Scan</h3>
+                    <p class="text-gray-400 text-sm">Take a photo. Our AI screens the image to verify type and biodegradability.</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-eco-green rounded-full flex items-center justify-center border-8 border-gray-900 z-10 mb-6">
+                        <i class="fa-solid fa-microchip text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">2. Get Evaluated</h3>
+                    <p class="text-gray-400 text-sm">ML estimates quality and quantity to generate a fair point value.</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center border-8 border-gray-900 z-10 mb-6">
+                        <i class="fa-solid fa-calendar-check text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">3. Pickup</h3>
+                    <p class="text-gray-400 text-sm">The nearest trader is assigned via path optimization to collect your waste.</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-yellow-500 rounded-full flex items-center justify-center border-8 border-gray-900 z-10 mb-6">
+                        <i class="fa-solid fa-coins text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">4. Earn & Redeem</h3>
+                    <p class="text-gray-400 text-sm">Points hit your wallet. Redeem for Crypto, NFTs, or store coupons.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="rewards" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6">More Than Just Recycling Points</h2>
+                    <p class="text-lg text-gray-600 mb-8">We've gamified sustainability. Your waste isn't just trash—it's a currency that works for you in the digital and physical world.</p>
+                    
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mt-1">
+                                <i class="fa-brands fa-bitcoin text-tech-blue"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-gray-900">Digital Assets & Crypto</h4>
+                                <p class="text-gray-600">Convert points into select Cryptocurrencies or exclusive eco-NFTs within various trading apps.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                                <i class="fa-solid fa-tag text-eco-green"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-gray-900">Deals & Coupons</h4>
+                                <p class="text-gray-600">Redeem points for discounts on popular third-party apps, services, and supermarkets.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mt-1">
+                                <i class="fa-solid fa-store text-yellow-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-gray-900">The Eco-Store</h4>
+                                <p class="text-gray-600">Close the Loop. Use points to buy new products and DIY items manufactured from recycled plastics.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+                    <h3 class="text-2xl font-bold mb-6 text-center">Wallet Dashboard</h3>
+                    <div class="border rounded-xl p-4 mb-4 bg-gray-50">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-500">Current Balance</span>
+                            <i class="fa-solid fa-wallet text-tech-blue"></i>
+                        </div>
+                        <div class="text-3xl font-bold text-gray-900">2,450 <span class="text-sm font-normal text-gray-500">Pts</span></div>
+                    </div>
+                    <div class="space-y-3">
+                        <button class="w-full flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50 transition">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-brands fa-ethereum text-purple-500 text-xl"></i>
+                                <span class="font-bold">Convert to ETH</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                        </button>
+                        <button class="w-full flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50 transition">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-bag-shopping text-eco-green text-xl"></i>
+                                <span class="font-bold">Buy Recycled Planter</span>
+                            </div>
+                            <span class="text-sm text-green-600 font-bold">-500 Pts</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="technology" class="py-20 bg-white border-t">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-heading font-bold mb-4">Powered by Advanced Technology</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-12">Our platform ensures accuracy, speed, and scalability using a robust modern tech stack.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-4 border-b pb-2 inline-block">AI & Machine Learning</h4>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">TensorFlow</span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">Keras</span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">OpenCV</span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">Python</span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">NumPy</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-4 border-b pb-2 inline-block">Mobile & Web</h4>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">Flutter</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">Kotlin</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">Android</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">React</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-4 border-b pb-2 inline-block">Backend & Data</h4>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-semibold">Node.js</span>
+                        <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-semibold">MongoDB</span>
+                        <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-semibold">Firebase</span>
+                        <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-semibold">SQL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="py-20 bg-tech-blue text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-4xl font-heading font-bold mb-6">Ready to Clean Up?</h2>
+            <p class="text-xl mb-8 opacity-90">Join thousands of households earning rewards for making the planet cleaner. Download the EcoScan AI app today.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-tech-blue px-8 py-4 rounded-lg font-bold hover:bg-gray-100 transition shadow-lg text-lg">
+                    Start Recycling Today
+                </button>
+            </div>
+            <p class="mt-8 text-sm opacity-75">
+                Are you a waste trader? <a href="#" class="underline font-bold hover:text-white">Join our logistics network here.</a>
+            </p>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="col-span-1 md:col-span-2">
+                <span class="font-heading font-bold text-2xl text-white">EcoScan <span class="text-tech-blue">AI</span></span>
+                <p class="mt-4 text-sm max-w-xs">An Android and Web platform bridging the gap between households and recyclers through Artificial Intelligence.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white">About Us</a></li>
+                    <li><a href="#" class="hover:text-white">The Mission</a></li>
+                    <li><a href="#" class="hover:text-white">Marketplace</a></li>
+                    <li><a href="#" class="hover:text-white">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-white">Trader Guidelines</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-center text-sm">
+            <p>© 2024 EcoScan AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+
+        // --- GOOGLE CLOUD VISION API LOGIC ---
+        
+        // ⚠️ REPLACE WITH YOUR REAL API KEY BELOW ⚠️
+        const API_KEY = "AIzaSyBkTDpFLGqtRZCGQ0d8kPtJPms7v0nBdVY"; 
+        const API_URL = `https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}`;
+
+        function processImage() {
+            const input = document.getElementById('imageInput');
+            const file = input.files[0];
+
+            if (!file) return;
+
+            // 1. Show Loading State
+            document.getElementById('loadingMessage').classList.remove('hidden');
+            document.getElementById('placeholderIcon').classList.add('hidden');
+            
+            // 2. Display Image Preview
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                const imgElement = document.getElementById('previewImage');
+                imgElement.src = reader.result;
+                imgElement.classList.remove('hidden');
+
+                // 3. Prepare Data for API (Remove the "data:image/jpeg;base64," part)
+                const base64Content = reader.result.split(',')[1];
+                sendToGoogleVision(base64Content);
+            };
+        }
+
+        async function sendToGoogleVision(base64String) {
+            const requestBody = {
+                requests: [
+                    {
+                        image: { content: base64String },
+                        features: [{ type: "LABEL_DETECTION", maxResults: 10 }]
+                    }
+                ]
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                displayResults(data);
+
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('resultText').innerText = "Error connecting to AI. Check console.";
+            } finally {
+                document.getElementById('loadingMessage').classList.add('hidden');
+            }
+        }
+
+        function displayResults(data) {
+            // Check if valid data came back
+            if (!data.responses || !data.responses[0].labelAnnotations) {
+                document.getElementById('resultText').innerText = "Could not identify object.";
+                return;
+            }
+
+            const labels = data.responses[0].labelAnnotations;
+            
+            // Logic to check for recyclable keywords
+            const recyclableKeywords = ['plastic', 'bottle', 'glass', 'paper', 'cardboard', 'can', 'metal', 'container'];
+            
+            // Find if any label matches our keywords
+            const foundItem = labels.find(label => 
+                recyclableKeywords.some(keyword => label.description.toLowerCase().includes(keyword))
+            );
+
+            const resultText = document.getElementById('resultText');
+            const pointsDisplay = document.getElementById('pointsDisplay');
+            const pointsValue = document.getElementById('pointsValue');
+
+            if (foundItem) {
+                // Success Case
+                resultText.innerText = `Detected: ${foundItem.description} (${Math.round(foundItem.score * 100)}% confidence)`;
+                resultText.className = "text-green-600 font-bold mb-4";
+                
+                // Random Points Generator for Demo
+                pointsValue.innerText = Math.floor(Math.random() * 50) + 10; 
+                pointsDisplay.classList.remove('hidden');
+            } else {
+                // Failure Case
+                resultText.innerText = "No recyclable waste detected. Try again.";
+                resultText.className = "text-red-500 font-bold mb-4";
+                pointsDisplay.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
